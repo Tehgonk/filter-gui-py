@@ -3,12 +3,12 @@ import tkinter.ttk as ttk
 import tkinter.filedialog as filedialog
 import json
 
-# Create the main window
+# Create main window
 window = tk.Tk()
 window.title("Filter GUI")
 window.geometry("460x660")
 
-# Create the label widgets
+# Create label widgets
 #top_label = tk.Label(text="Use the text boxes below to create a filter rule. Rules get added to 'rules.txt' and can be copy+pasted into the filter rules of the extension.", font="Arial 8 bold", wraplength=380)
 instructions_label_1 = tk.Label(text="Separate each value with a comma", wraplength=380)
 character_label = tk.Label(text="Character(s):")
@@ -24,7 +24,7 @@ instructions_label_3 = tk.Label(text="Either 'credits' or 'marks' (Melk)", wrapl
 shop_label = tk.Label(text="Shop type:")
 instructions_label_4 = tk.Label(text="Output", font="Arial 8 bold", wraplength=380)
 
-# Create the entry widgets
+# Create entry widgets
 character_entry = tk.Entry(width=35)
 item_entry = tk.Entry(width=35)
 blessing_entry = tk.Entry(width=35)
@@ -35,13 +35,13 @@ minBlessingRarity_entry = tk.Entry(width=35)
 minPerkRarity_entry = tk.Entry(width=35)
 shop_entry = tk.Entry(width=35)
 
-# Create a separator widget
+# Create separator widgets
 #separator_1 = ttk.Separator(window, orient=tk.HORIZONTAL)
 separator_2 = ttk.Separator(window, orient=tk.HORIZONTAL)
 separator_3 = ttk.Separator(window, orient=tk.HORIZONTAL)
 separator_4 = ttk.Separator(window, orient=tk.HORIZONTAL)
 
-# Add the top label, separator, and entry widgets to the grid
+# Add labels, separators, and entry widgets to window
 #top_label.grid(row=0, column=0, columnspan=2, sticky=tk.W+tk.E, pady=(10, 0))
 
 #separator_1.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E, pady=(10, 0), padx=(10, 0))
@@ -78,23 +78,23 @@ separator_4.grid(row=17, column=0, columnspan=2, sticky=tk.W+tk.E, pady=(10, 0),
 
 instructions_label_4.grid(row=18, column=0, columnspan=2, sticky=tk.W+tk.E, pady=(10, 0))
 
-# Create a frame to hold the output text widget
+# Create frame to hold the output text widget
 output_frame = tk.Frame(window)
 output_frame.grid(row=19, column=0, columnspan=2, sticky=tk.W+tk.E)
 
-# Create a scrollable text widget to display the JSON output
+# Create scrollable text widget to display the JSON output
 output_text = tk.Text(output_frame, width=50, height=8, wrap=tk.WORD, yscrollcommand=True)
 output_text.pack(pady=10)
 
-# Create a list to store the data for all entries
+# Create list to store the data for all entries
 data_list = []
 
-# Create the add button
+# Create add button
 def add_entry():
-    # Create the data dictionary
+    # Create data dictionary
     data = {}
 
-    # Get the values from the textboxes and add them to the dictionary if they are not empty
+    # Get values from the textboxes and add them to the dictionary if they are not empty
     character = character_entry.get()
     if character:
         values = character.split(", ")
@@ -147,7 +147,7 @@ def add_entry():
     if shop:
         data["shop"] = shop
 
-    # Clear the contents of the entry fields
+    # Clear contents of the entry fields
     character_entry.delete(0, "end")
     item_entry.delete(0, "end")
     blessing_entry.delete(0, "end")
@@ -158,10 +158,10 @@ def add_entry():
     minPerkRarity_entry.delete(0, "end")
     shop_entry.delete(0, "end")
 
-    # Add the data to the data list
+    # Add data to the data list
     data_list.append(data)
 
-    # Format the data list as JSON and add it to the text widget
+    # Format data list as JSON and add it to the text widget
     output_text.delete("1.0", tk.END)
     output_text.insert(tk.END, json.dumps(data_list, indent=4))
 
@@ -169,12 +169,12 @@ add_button = tk.Button(text="Add", command=add_entry)
 add_button.configure(width=10)
 add_button.grid(row=20, column=0, pady=(10, 0))
 
-# Create the copy button
+# Create copy button
 def copy():
     # Get the contents of the text widget
     data = output_text.get("1.0", "end-1c")
 
-    # Copy the data to the clipboard
+    # Copy data to the clipboard
     window.clipboard_clear()
     window.clipboard_append(data)
 
@@ -182,34 +182,34 @@ copy_button = tk.Button(text="Copy", command=copy)
 copy_button.configure(font=("Arial 7 bold"), bg="white", activebackground="white", bd=0)
 copy_button.place(x=390, y=455)
 
-# undo function
+# Undo function
 def undo(event):
     # Remove the last entry from the data list
     data_list.pop()
 
-    # Format the data list as JSON and add it to the text widget
+    # Format data list as JSON and add it to the text widget
     output_text.delete("1.0", tk.END)
     output_text.insert(tk.END, json.dumps(data_list, indent=4))
 
 window.bind("<Control-z>", undo)
 
-# Create the export button
+# Create export button
 def export():
-    # Get the contents of the text widget
+    # Get contents of the text widget
     data = output_text.get("1.0", "end-1c")
 
     # Create a file dialog to save the file
     file = filedialog.asksaveasfile(mode="w", defaultextension=".txt")
 
-    # Write the data to the file
+    # Write data to the file
     file.write(data)
 
-    # Close the file
+    # Close file
     file.close()
 
 export_button = tk.Button(text="Export", command=export)
 export_button.configure(width=10)
 export_button.grid(row=20, column=1, pady=(10, 0))
 
-# Run the main loop
+# Run main loop
 window.mainloop()
